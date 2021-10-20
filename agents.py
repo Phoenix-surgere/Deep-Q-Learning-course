@@ -77,7 +77,7 @@ class DQNAgent():
 
   
   def replace_target_network(self):
-    if self.learn_step_counter % self.replace_target_cnt:
+    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
@@ -192,9 +192,13 @@ class DDQNAgent():
     dones = T.tensor(done).to(self.q_online.device)
     return states, actions, rewards, next_states, dones
 
+      def replace_target_network(self):
+        if self.replace_target_cnt is not None and \
+           self.learn_step_counter % self.replace_target_cnt == 0:
+            self.q_next.load_state_dict(self.q_eval.state_dict())
   
   def replace_target_network(self):
-    if self.learn_step_counter % self.replace_target_cnt:
+    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
@@ -213,38 +217,6 @@ class DDQNAgent():
     self.q_online.save_checkpoint()
     self._q_target.save_checkpoint()
   
-  def learn_OLD(self):
-    #bail out if we don't have more than batch_size items in our memory buffer
-    if self.memory.mem_cntr < self.batch_size:
-      return
-    
-    self.q_online.optimizer.zero_grad()
-
-    self.replace_target_network()
-
-    states, actions, rewards, next_states, dones = self.sample_memory()
-
-    #way to deal with the wrong demension
-    indices = np.arange(self.batch_size)
-    q_pred = self.q_online.forward(states)[indices, actions] #dims -> batch_size x n_actions
-
-    # max returns (max_value, index_of_max) hence we only want the first
-    q_next = self.q_target.forward(next_states).max(dim=1)[0]
-    
-    #if state is terminal target = reward otherwise it's td-target as usual
-    #could do a conditional but here's a smarter way with done as a mask:
-    #NOTE that this is the only detail I didn't get from my own implementation
-    q_next[dones] = 0.0
-    #if dones.any() == 1: print(q_next, dones)
-
-    q_target = rewards + self.gamma * q_next
-
-    loss = self.q_online.loss(q_target, q_pred).to(self.q_online.device)
-    loss.backward()
-    self.q_online.optimizer.step()
-    self.learn_step_counter += 1
-
-    self.decrement_epsilon()
       
   def learn(self):
     #bail out if we don't have more than batch_size items in our memory buffer
@@ -353,8 +325,9 @@ class DuelingQNAgent():
 
   
   def replace_target_network(self):
-    if self.learn_step_counter % self.replace_target_cnt:
+    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
+
  
  #That I did not do because it is very simple and will rework it later 
  #on to utilize more schemas for experimenting
@@ -470,7 +443,7 @@ class DuelingDDQNAgent():
 
   
   def replace_target_network(self):
-    if self.learn_step_counter % self.replace_target_cnt:
+    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
@@ -489,39 +462,6 @@ class DuelingDDQNAgent():
     self.q_online.save_checkpoint()
     self._q_target.save_checkpoint()
   
-  def learn_OLD(self):
-    #bail out if we don't have more than batch_size items in our memory buffer
-    if self.memory.mem_cntr < self.batch_size:
-      return
-    
-    self.q_online.optimizer.zero_grad()
-
-    self.replace_target_network()
-
-    states, actions, rewards, next_states, dones = self.sample_memory()
-
-    #way to deal with the wrong demension
-    indices = np.arange(self.batch_size)
-    q_pred = self.q_online.forward(states)[indices, actions] #dims -> batch_size x n_actions
-
-    # max returns (max_value, index_of_max) hence we only want the first
-    q_next = self.q_target.forward(next_states).max(dim=1)[0]
-    
-    #if state is terminal target = reward otherwise it's td-target as usual
-    #could do a conditional but here's a smarter way with done as a mask:
-    #NOTE that this is the only detail I didn't get from my own implementation
-    q_next[dones] = 0.0
-    #if dones.any() == 1: print(q_next, dones)
-
-    q_target = rewards + self.gamma * q_next
-
-    loss = self.q_online.loss(q_target, q_pred).to(self.q_online.device)
-    loss.backward()
-    self.q_online.optimizer.step()
-    self.learn_step_counter += 1
-
-    self.decrement_epsilon()
-      
   def learn(self):
     #bail out if we don't have more than batch_size items in our memory buffer
     if self.memory.mem_cntr < self.batch_size:
