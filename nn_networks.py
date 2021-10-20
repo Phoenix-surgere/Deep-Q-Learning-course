@@ -33,8 +33,10 @@ class DeepQNetwork(nn.Module):
     self.conv2 = nn.Conv2d(32, 64,  kernel_size=4, stride=2)
 
     self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
-
-    self.fc1 = nn.Linear(self.print_cnn_dim(), 512)
+    
+    self.fc_input_dims = self.print_cnn_dim()
+    
+    self.fc1 = nn.Linear(self.fc_input_dims, 512)
 
     self.fc2 = nn.Linear(512, n_actions)
 
@@ -49,7 +51,7 @@ class DeepQNetwork(nn.Module):
     out = F.relu(self.conv1(state))
     out = F.relu(self.conv2(out))
     out = F.relu(self.conv3(out)) #shape: (Batch_Size, no_filters, H,W )
-    out = out.view(-1, self.print_cnn_dim() )  #np.reshape equivalent
+    out = out.view(-1, self.fc_input_dims )  #np.reshape equivalent
     #out = out.view(out.size()[0], -1 )  #equivalent to above
     out = F.relu(self.fc1(out))
     actions = self.fc2(out)
@@ -93,9 +95,11 @@ class DuelingDeepQNetwork(nn.Module):
 
     self.conv2 = nn.Conv2d(32, 64,  kernel_size=4, stride=2)
 
-    self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
-
-    self.fc1 = nn.Linear(self.print_cnn_dim(), 512)  # => this remains as-is
+    self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)    
+    
+    self.fc_input_dims = self.print_cnn_dim()
+    
+    self.fc1 = nn.Linear(self.fc_input_dims, 512)  # => this remains as-is
     
     self.value_output = nn.Linear(512, 1)
 
@@ -112,7 +116,7 @@ class DuelingDeepQNetwork(nn.Module):
     out = F.relu(self.conv1(state))
     out = F.relu(self.conv2(out))
     out = F.relu(self.conv3(out)) #shape: (Batch_Size, no_filters, H,W )
-    out = out.view(-1, self.print_cnn_dim() )  #np.reshape equivalent
+    out = out.view(-1, self.fc_input_dims )  #np.reshape equivalent
     out = F.relu(self.fc1(out))
 
     state_value = self.value_output(out)
