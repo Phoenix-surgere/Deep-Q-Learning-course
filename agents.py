@@ -77,7 +77,7 @@ class DQNAgent():
 
   
   def replace_target_network(self):
-    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
+    if self.replace_target_cnt is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
@@ -194,7 +194,7 @@ class DDQNAgent():
 
   
   def replace_target_network(self):
-    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
+    if self.replace_target_cnt is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
@@ -350,7 +350,7 @@ class DuelingQNAgent():
 
   
   def replace_target_network(self):
-    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
+    if self.replace_target_cnt is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
 
  
@@ -468,7 +468,7 @@ class DuelingDDQNAgent():
 
   
   def replace_target_network(self):
-    if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
+    if self.replace_target_cnt is not None and self.learn_step_counter % self.replace_target_cnt == 0:
       self.q_target.load_state_dict(self.q_online.state_dict())
  
  #That I did not do because it is very simple and will rework it later 
