@@ -71,7 +71,7 @@ class DeepQNetwork(nn.Module):
     return T.prod(T.tensor(out.shape[1:])).item()
 
   def save_checkpoint(self):
-    print("... saving checkpount ...")
+    print("... saving checkpoint ...")
     T.save(self.state_dict(), self.checkpoint_file)
   
   def load_checkpoint(self):
@@ -144,7 +144,7 @@ class DuelingDeepQNetwork(nn.Module):
     return T.prod(T.tensor(out.shape[1:])).item()
 
   def save_checkpoint(self):
-    print("... saving checkpount ...")
+    print("... saving checkpoint ...")
     T.save(self.state_dict(), self.checkpoint_file)
   
   def load_checkpoint(self):
