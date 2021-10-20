@@ -213,8 +213,35 @@ class DDQNAgent():
     self.q_online.save_checkpoint()
     self._q_target.save_checkpoint()
   
-      
   def learn(self):
+    if self.memory.mem_cntr < self.batch_size:
+      return
+
+    self.q_online.optimizer.zero_grad()
+
+    self.replace_target_network()
+
+    states, actions, rewards, states_, dones = self.sample_memory()
+
+    indices = np.arange(self.batch_size)
+
+    q_pred = self.q_online.forward(states)[indices, actions]
+    q_next = self.q_target.forward(states_)
+    q_eval = self.q_online.forward(states_)
+
+    max_actions = T.argmax(q_eval, dim=1)
+    q_next[dones] = 0.0
+
+    q_target = rewards + self.gamma*q_next[indices, max_actions]
+    loss = self.q_online.loss(q_target, q_pred).to(self.q_online.device)
+    loss.backward()
+
+    self.q_online.optimizer.step()
+    self.learn_step_counter += 1
+
+    self.decrement_epsilon()
+  
+  def learn_BUGGED(self):
     #bail out if we don't have more than batch_size items in our memory buffer
     if self.memory.mem_cntr < self.batch_size:
       return
@@ -255,6 +282,8 @@ class DDQNAgent():
     self.learn_step_counter += 1
 
     self.decrement_epsilon()
+    
+  
     
     
 class DuelingQNAgent():
@@ -457,8 +486,37 @@ class DuelingDDQNAgent():
   def load_models(self):
     self.q_online.save_checkpoint()
     self._q_target.save_checkpoint()
-  
+    
   def learn(self):
+    if self.memory.mem_cntr < self.batch_size:
+      return
+
+    self.q_online.optimizer.zero_grad()
+
+    self.replace_target_network()
+
+    states, actions, rewards, states_, dones = self.sample_memory()
+
+    indices = np.arange(self.batch_size)
+
+    q_pred = self.q_online.forward(states)[indices, actions]
+    q_next = self.q_target.forward(states_)
+    q_eval = self.q_online.forward(states_)
+
+    max_actions = T.argmax(q_eval, dim=1)
+    q_next[dones] = 0.0
+
+    q_target = rewards + self.gamma*q_next[indices, max_actions]
+    loss = self.q_online.loss(q_target, q_pred).to(self.q_online.device)
+    loss.backward()
+
+    self.q_online.optimizer.step()
+    self.learn_step_counter += 1
+
+    self.decrement_epsilon()  
+  
+  
+  def learn_BUGGED(self):
     #bail out if we don't have more than batch_size items in our memory buffer
     if self.memory.mem_cntr < self.batch_size:
       return
