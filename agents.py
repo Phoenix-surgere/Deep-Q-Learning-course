@@ -192,10 +192,6 @@ class DDQNAgent():
     dones = T.tensor(done).to(self.q_online.device)
     return states, actions, rewards, next_states, dones
 
-      def replace_target_network(self):
-        if self.replace_target_cnt is not None and \
-           self.learn_step_counter % self.replace_target_cnt == 0:
-            self.q_next.load_state_dict(self.q_eval.state_dict())
   
   def replace_target_network(self):
     if self.replace_target is not None and self.learn_step_counter % self.replace_target_cnt == 0:
