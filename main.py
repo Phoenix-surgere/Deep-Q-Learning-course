@@ -75,7 +75,7 @@ if __name__ == "__main__":
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
     #env = make_env(args.env_name)
-    env = make_env(env_name=args.env_name, repeat=args.repeat,
+    env = make_env(env_name=args.env_name, stack_size=args.repeat,
                   clip_rewards=args.clip_rewards, no_ops=args.no_ops,
                   fire_first=args.fire_first)
 
