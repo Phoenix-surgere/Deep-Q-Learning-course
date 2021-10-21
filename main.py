@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
     agent = agent_(gamma = args.gamma,
                      epsilon = args.epsilon, 
-                     alpha=args.lr, 
+                     lr=args.lr, 
                      input_dims = env.observation_space.shape,
                      n_actions = env.action_space.n,
                      mem_size = args.mem_size,
