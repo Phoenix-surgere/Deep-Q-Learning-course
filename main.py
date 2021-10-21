@@ -96,7 +96,7 @@ if __name__ == "__main__":
                      eps_dec = args.eps_dec,
                      chkpt_dir = args.path,
                      algo=args.algo,
-                     env_name = args.env
+                     env_name = args.env_name
                      )
     if args.load_checkpoint:
       agent.load_models()
