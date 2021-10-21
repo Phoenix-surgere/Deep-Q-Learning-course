@@ -97,7 +97,7 @@ class DQNAgent_NEW(Agent):
   #so I can now pass an arbitrary number of both of these using this syntax
   def __init__(self, *args, **kwargs):
     #Calls base constructor and pass in all of our arguments 
-    super(DQNAgent, self).__init__(*args, **kwargs)
+    super(DQNAgent_NEW, self).__init__(*args, **kwargs)
     
     self.q_online = DeepQNetwork(lr=self.lr, n_actions=self.n_actions, 
                                input_dims = self.input_dims,
@@ -147,7 +147,7 @@ class DQNAgent_NEW(Agent):
 class DDQNAgent_NEW(Agent):
   def __init__(self, *args, **kwargs):
     #Calls base constructor and pass in all of our arguments 
-    super(DDQNAgent, self).__init__(*args, **kwargs)
+    super(DDQNAgent_NEW, self).__init__(*args, **kwargs)
     
     self.q_online = DeepQNetwork(lr=self.lr, n_actions=self.n_actions, 
                                input_dims = self.input_dims,
@@ -235,7 +235,7 @@ class DDQNAgent_NEW(Agent):
 class DuelingQNAgent_NEW(Agent):
   def __init__(self, *args, **kwargs):
     #Calls base constructor and pass in all of our arguments 
-    super(DuelingQNAgent, self).__init__(*args, **kwargs)
+    super(DuelingQNAgent_NEW, self).__init__(*args, **kwargs)
 
     self.q_online = DuelingDeepQNetwork(lr=self.lr, n_actions=self.n_actions, 
                                  input_dims = self.input_dims,
@@ -279,7 +279,7 @@ class DuelingQNAgent_NEW(Agent):
 class DuelingDDQNAgent_NEW(Agent):
   def __init__(self, *args, **kwargs):
     #Calls base constructor and pass in all of our arguments 
-    super(DuelingDDQNAgent, self).__init__(*args, **kwargs)
+    super(DuelingDDQNAgent_NEW, self).__init__(*args, **kwargs)
 
     self.q_online = DuelingDeepQNetwork(lr=self.lr, n_actions=self.n_actions, 
                                  input_dims = self.input_dims,
